@@ -39,6 +39,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { SetStateAction, useContext, useRef, useState } from "react";
 import { NoteContext } from "../context/NoteContext";
 import { capitalise, dateStamp } from "../utils/helpers";
+import { deleteNote } from "../utils/api";
 
 interface Props {
   tabName: string;
@@ -60,7 +61,7 @@ export default function NoteList({ tabName }: Props) {
   const navigate = useNavigate();
 
   const ctx = useContext(NoteContext) as NoteContextType;
-  const { displaying }: NoteContextType = ctx;
+  const { displaying, setNotes }: NoteContextType = ctx;
   const archive = displaying?.filter((note: NoteType) => note.archived);
   const active = displaying?.filter((note: NoteType) => !note.archived);
 
@@ -83,6 +84,11 @@ export default function NoteList({ tabName }: Props) {
     Math.ceil(list()?.length / notesPerPage.current)
   ).fill(1);
   const noOfPages = pages.length;
+
+  function handlDeleteNote(id) {
+    deleteNote(id);
+    setNotes((cur: NoteType[]) => cur.filter((note) => note.id !== id));
+  }
 
   return (
     <Card>
@@ -157,7 +163,15 @@ export default function NoteList({ tabName }: Props) {
 
                         <DropdownMenuItem>Archive</DropdownMenuItem>
                         <DropdownMenuItem>
-                          <Button variant="destructive" className="w-full">
+                          <Button
+                            variant="destructive"
+                            className="w-full"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handlDeleteNote(note.id);
+                            }}
+                          >
                             Delete
                           </Button>
                         </DropdownMenuItem>

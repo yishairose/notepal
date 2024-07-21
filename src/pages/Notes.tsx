@@ -38,8 +38,7 @@ import {
   useState,
 } from "react";
 import { NoteContext } from "../context/NoteContext";
-import supabase from "../config/supabaseClient";
-import { fetchNotes } from "../utils/api";
+
 interface NoteType {
   id: number;
   title: string;
@@ -58,17 +57,9 @@ export default function Notes() {
   const [sort, setSort] = useState("created");
   const [searchType, setSearchType] = useState("title");
   const [query, setQuery] = useState("");
-  const { notes, setDisplaying, setCurPage, setNotes } = useContext(
+  const { notes, setDisplaying, setCurPage, displaying } = useContext(
     NoteContext
   ) as NoteContextType;
-
-  useEffect(() => {
-    (async function () {
-      const data = await fetchNotes();
-      if (!data) return;
-      setNotes(data);
-    })();
-  }, [setNotes]);
 
   useEffect(() => {
     const lowerCaseQuery = query.toLowerCase();
@@ -97,7 +88,13 @@ export default function Notes() {
   }, [sort, setDisplaying, notes]);
 
   return (
-    <Tabs defaultValue="active" className="w-full ">
+    <Tabs
+      defaultValue="active"
+      className="w-full "
+      onValueChange={() => {
+        setCurPage(1);
+      }}
+    >
       <div className="flex items-center gap-3  mb-3 p-4 flex-col md:flex-row md:justify-between justify-between">
         <TabsList>
           <TabsTrigger value="active">Active</TabsTrigger>
@@ -183,7 +180,7 @@ export function loader() {
   // const { data, error } = supabase.from("notes").select();
 
   // if (error) throw new Error(error);
-  // setNotes(data);
+  // /(data);
 
   return null;
 }

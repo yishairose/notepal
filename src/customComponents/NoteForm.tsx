@@ -2,11 +2,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Form, useFetcher, useNavigate, useParams } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import {
+  Form,
+  redirect,
+  useFetcher,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+import { useContext, useEffect, useRef, useState } from "react";
 import supabase from "../config/supabaseClient";
 import { NoteContext } from "../context/NoteContext";
-import { fetchNotes } from "../utils/api";
+import { editNote, fetchNotes } from "../utils/api";
 
 interface NoteType {
   id: number;
@@ -22,32 +28,59 @@ interface NoteContextType {
   setCurPage: Dispatch<SetStateAction<number>>;
 }
 export default function NoteForm({ type }) {
-  const fetcher = useFetcher();
-
   const navigate = useNavigate();
+  const { notes, setNotes } = useContext(NoteContext) as NoteContextType;
   const params = useParams();
-  const id = Number(params.id.slice(1));
+  const id = Number(params.id?.slice(1)) || null;
+  const [newNoteId, setNewNoteId] = useState(null);
+
+  useEffect(() => {
+    if (newNoteId) {
+      navigate(`/note/:${newNoteId}`);
+    } else {
+      return;
+    }
+  }, [newNoteId, navigate]);
+
+  useEffect(() => {
+    if (type === "edit") {
+      const curNote = notes?.filter((note) => note.id === id)?.at(0);
+      setTitle(curNote?.title);
+      setContent(curNote?.content);
+    }
+  }, []);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
-  useEffect(() => {
-    if (!fetcher.data && fetcher.state === "idle") fetcher.load(`/note/:${id}`);
-    if (fetcher.data) setTitle(fetcher.data[0].title);
-    if (fetcher.data) setContent(fetcher.data[0].content);
-  }, [fetcher, id]);
-
   async function handleSubmit() {
     if (type === "new") {
-      const { data, error } = await supabase
-        .from("notes")
-        .insert([{ title: title, content: content }])
-        .select();
-      navigate(`/note/:${data?.at(0).id}`);
-      return data;
+      try {
+        const { data, error } = await supabase
+          .from("notes")
+          .insert([{ title: title, content: content }])
+          .select();
+
+        if (error) throw error;
+
+        if (data) {
+          const [newNote] = data;
+          setNotes((cur) => [...cur, newNote]);
+          setNewNoteId(newNote.id);
+        }
+      } catch (error) {
+        console.error("Error adding note:", error);
+      }
     }
     if (type === "edit") {
-      console.log("edit");
+      const data = await editNote(id, title, content);
+      if (data) {
+        const [editedNote] = data;
+        setNotes((cur: NoteType[]) =>
+          cur.map((note: NoteType) => (note.id === id ? editedNote : note))
+        );
+        setNewNoteId(editedNote.id);
+      }
     }
   }
 
@@ -83,7 +116,7 @@ export default function NoteForm({ type }) {
               handleSubmit();
             }}
           >
-            Add note
+            {type === "edit" ? "Edit Note" : "Add note"}
           </Button>
 
           <Button

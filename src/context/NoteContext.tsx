@@ -1,4 +1,13 @@
-import { createContext, SetStateAction, useState, Dispatch } from "react";
+import {
+  createContext,
+  SetStateAction,
+  useState,
+  Dispatch,
+  useEffect,
+  act,
+  useReducer,
+} from "react";
+import { fetchNotes } from "../utils/api";
 
 interface NoteType {
   id: number;
@@ -22,10 +31,28 @@ type ChildrenProps = {
   children: React.ReactNode;
 };
 
+// const notesReducer = (state, action) => {
+//   switch (action.type) {
+//     case "SET_NOTES":
+//       return action.payload;
+
+//     default:
+//       return state;
+//   }
+// };
+
 export function NoteProvider({ children }: ChildrenProps) {
   const [notes, setNotes] = useState<NoteType[] | null>([]);
+
   const [displaying, setDisplaying] = useState<NoteType[] | null>(notes);
   const [curPage, setCurPage] = useState(1);
+  useEffect(() => {
+    (async function () {
+      const data = await fetchNotes();
+      if (!data) return;
+      setNotes(data);
+    })();
+  }, [setNotes]);
 
   return (
     <NoteContext.Provider
