@@ -10,9 +10,8 @@ import {
   useParams,
 } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
-import supabase from "../config/supabaseClient";
+
 import { NoteContext } from "../context/NoteContext";
-import { editNote, fetchNotes } from "../utils/api";
 
 interface NoteType {
   id: number;
@@ -28,8 +27,15 @@ interface NoteContextType {
   setCurPage: Dispatch<SetStateAction<number>>;
 }
 export default function NoteForm({ type }) {
+  const [range, setRange] = useState();
+  const [lastChange, setLastChange] = useState();
+  const [readOnly, setReadOnly] = useState(false);
+  const quillRef = useRef();
+
   const navigate = useNavigate();
-  const { notes, setNotes } = useContext(NoteContext) as NoteContextType;
+  const { notes, addNote, editNote } = useContext(
+    NoteContext
+  ) as NoteContextType;
   const params = useParams();
   const id = Number(params.id?.slice(1)) || null;
   const [newNoteId, setNewNoteId] = useState(null);
@@ -55,31 +61,13 @@ export default function NoteForm({ type }) {
 
   async function handleSubmit() {
     if (type === "new") {
-      try {
-        const { data, error } = await supabase
-          .from("notes")
-          .insert([{ title: title, content: content }])
-          .select();
-
-        if (error) throw error;
-
-        if (data) {
-          const [newNote] = data;
-          setNotes((cur) => [...cur, newNote]);
-          setNewNoteId(newNote.id);
-        }
-      } catch (error) {
-        console.error("Error adding note:", error);
-      }
+      const data = await addNote(title, content);
+      setNewNoteId(data[0].id);
     }
     if (type === "edit") {
       const data = await editNote(id, title, content);
       if (data) {
-        const [editedNote] = data;
-        setNotes((cur: NoteType[]) =>
-          cur.map((note: NoteType) => (note.id === id ? editedNote : note))
-        );
-        setNewNoteId(editedNote.id);
+        setNewNoteId(data[0].id);
       }
     }
   }

@@ -39,7 +39,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { SetStateAction, useContext, useRef, useState } from "react";
 import { NoteContext } from "../context/NoteContext";
 import { capitalise, dateStamp } from "../utils/helpers";
-import { deleteNote } from "../utils/api";
 
 interface Props {
   tabName: string;
@@ -71,7 +70,9 @@ export default function NoteList({ tabName }: Props) {
     if (tabName == "all") return displaying;
   };
 
-  const { curPage, setCurPage } = useContext(NoteContext) as NoteContextType;
+  const { curPage, setCurPage, deleteNote } = useContext(
+    NoteContext
+  ) as NoteContextType;
   const notesPerPage: object = useRef(5);
 
   const pagination = () => {
@@ -87,7 +88,6 @@ export default function NoteList({ tabName }: Props) {
 
   function handlDeleteNote(id) {
     deleteNote(id);
-    setNotes((cur: NoteType[]) => cur.filter((note) => note.id !== id));
   }
 
   return (

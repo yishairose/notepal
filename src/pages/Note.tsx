@@ -8,13 +8,11 @@ import {
 } from "@/components/ui/card";
 import { Toggle } from "@/components/ui/toggle";
 import { Button } from "../components/ui/button";
-import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowBigLeft, PackageOpen } from "lucide-react";
 import { dateStamp } from "../utils/helpers";
 import { NoteContext } from "../context/NoteContext";
 import { useContext } from "react";
-import supabase from "../config/supabaseClient";
-import { deleteNote } from "../utils/api";
 
 interface NoteType {
   id: number;
@@ -27,21 +25,26 @@ interface NoteContextType {
   notes: NoteType[] | null;
   displaying: NoteType[] | null;
   setDisplaying: Dispatch<SetStateAction<NoteType[]> | undefined>;
-  setCurPage: Dispatch<SetStateAction<number>>;
 }
 
 export default function Note() {
   const navigate = useNavigate();
 
-  const { notes, setNotes } = useContext(NoteContext) as NoteContextType;
+  const { notes, deleteNote, archiveNote } = useContext(
+    NoteContext
+  ) as NoteContextType;
   const params = useParams();
   const id = Number(params.id.slice(1));
   const curNote = notes?.filter((note) => note.id === id)?.at(0);
 
   function handlDeleteNote() {
     deleteNote(id);
-    setNotes((cur: NoteType[]) => cur.filter((note) => note.id !== id));
     navigate("/notes");
+  }
+  function handleArchiveNote() {
+    archiveNote(curNote.id, curNote?.archived);
+    // setArchived((cur) => !cur);
+    // archiveNote(curNote.id, archived);
   }
   return (
     <div className="flex flex-col items-center gap-5 mt-24 h-screen ">
@@ -61,7 +64,11 @@ export default function Note() {
             <Link to={`/edit/:${curNote.id}`}>
               <Button>Edit</Button>
             </Link>
-            <Toggle variant="outline" pressed={curNote.archived}>
+            <Toggle
+              variant="outline"
+              pressed={curNote.archived}
+              onPressedChange={handleArchiveNote}
+            >
               <PackageOpen />
               &nbsp; Archive
             </Toggle>

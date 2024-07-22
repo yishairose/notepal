@@ -43,7 +43,7 @@ interface NoteType {
   id: number;
   title: string;
   content: string;
-  createdAt: string;
+  created_at: string;
   archived: boolean;
 }
 interface NoteContextType {
@@ -81,7 +81,7 @@ export default function Notes() {
       );
     } else if (sort === "created") {
       sorted = [...(notes || [])].sort((a, b) =>
-        a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0
+        a.created_at < b.created_at ? -1 : a.created_at > b.created_at ? 1 : 0
       );
     }
     setDisplaying(sorted);
