@@ -30,11 +30,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Circles } from "react-loader-spinner";
 import {
   Dispatch,
   SetStateAction,
   useContext,
   useEffect,
+  useMemo,
+  useRef,
   useState,
 } from "react";
 import { NoteContext } from "../context/NoteContext";
@@ -57,41 +60,23 @@ export default function Notes() {
   const [sort, setSort] = useState("created");
   const [searchType, setSearchType] = useState("title");
   const [query, setQuery] = useState("");
-  const { notes, setDisplaying, setCurPage, displaying } = useContext(
-    NoteContext
-  ) as NoteContextType;
+  const { setCurPage } = useContext(NoteContext) as NoteContextType;
 
+  //Reset pagination on component mount
+  const isMounted = useRef(false);
   useEffect(() => {
-    const lowerCaseQuery = query.toLowerCase();
-
-    const results = notes?.filter((note) =>
-      searchType === "title"
-        ? note.title.toLowerCase().includes(lowerCaseQuery)
-        : note.content.toLowerCase().includes(lowerCaseQuery)
-    );
-    setCurPage(1);
-    setDisplaying(results);
-  }, [query, setDisplaying, notes, searchType, setCurPage]);
-
-  useEffect(() => {
-    let sorted: NoteType[] | undefined;
-    if (sort === "alpha") {
-      sorted = [...(notes || [])].sort((a, b) =>
-        a.title < b.title ? -1 : a.title > b.title ? 1 : 0
-      );
-    } else if (sort === "created") {
-      sorted = [...(notes || [])].sort((a, b) =>
-        a.created_at < b.created_at ? -1 : a.created_at > b.created_at ? 1 : 0
-      );
+    if (!isMounted.current) {
+      isMounted.current = true;
+      setCurPage(1);
     }
-    setDisplaying(sorted);
-  }, [sort, setDisplaying, notes]);
+    return;
+  }, [setCurPage]);
 
   return (
     <Tabs
       defaultValue="active"
       className="w-full "
-      onValueChange={() => {
+      onValueChange={(value) => {
         setCurPage(1);
       }}
     >
@@ -114,6 +99,7 @@ export default function Notes() {
                 className="pl-8 pr-[90px] sm:w-full md:w-[200px] lg:w-[200px] xl:w-[300px]"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setQuery(e.target.value);
+                  setCurPage(1);
                 }}
                 value={query}
               />
@@ -164,23 +150,14 @@ export default function Notes() {
         </Link>
       </div>
       <TabsContent value="active">
-        <NoteList tabName={"active"} />
+        <NoteList tabName={"active"} search={{ query, searchType, sort }} />
       </TabsContent>
       <TabsContent value="all">
-        <NoteList tabName={"all"} />
+        <NoteList tabName={"all"} search={{ query, searchType, sort }} />
       </TabsContent>
       <TabsContent value="archived">
-        <NoteList tabName={"archive"} />
+        <NoteList tabName={"archived"} search={{ query, searchType, sort }} />
       </TabsContent>
     </Tabs>
   );
-}
-
-export function loader() {
-  // const { data, error } = supabase.from("notes").select();
-
-  // if (error) throw new Error(error);
-  // /(data);
-
-  return null;
 }

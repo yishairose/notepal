@@ -13,6 +13,7 @@ import { ArrowBigLeft, PackageOpen } from "lucide-react";
 import { dateStamp } from "../utils/helpers";
 import { NoteContext } from "../context/NoteContext";
 import { useContext } from "react";
+import { Circles } from "react-loader-spinner";
 
 interface NoteType {
   id: number;
@@ -30,7 +31,7 @@ interface NoteContextType {
 export default function Note() {
   const navigate = useNavigate();
 
-  const { notes, deleteNote, archiveNote } = useContext(
+  const { notes, deleteNote, archiveNote, isLoading } = useContext(
     NoteContext
   ) as NoteContextType;
   const params = useParams();
@@ -43,9 +44,20 @@ export default function Note() {
   }
   function handleArchiveNote() {
     archiveNote(curNote.id, curNote?.archived);
-    // setArchived((cur) => !cur);
-    // archiveNote(curNote.id, archived);
   }
+
+  if (isLoading)
+    return (
+      <div className="self-center mt-10">
+        <Circles
+          height="80"
+          width="80"
+          radius="9"
+          color="green"
+          ariaLabel="three-dots-loading"
+        />
+      </div>
+    );
   return (
     <div className="flex flex-col items-center gap-5 mt-24 h-screen ">
       {curNote && (

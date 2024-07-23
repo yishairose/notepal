@@ -20,8 +20,6 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Navigate to="/notes" replace />,
-        loader: notesLoader,
-        errorElement: <Error />,
       },
       { path: "/notes", element: <Notes /> },
       { path: "/new", element: <NewNote /> },

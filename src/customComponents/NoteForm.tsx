@@ -12,6 +12,7 @@ import {
 import { useContext, useEffect, useRef, useState } from "react";
 
 import { NoteContext } from "../context/NoteContext";
+import { Circles } from "react-loader-spinner";
 
 interface NoteType {
   id: number;
@@ -33,7 +34,7 @@ export default function NoteForm({ type }) {
   const quillRef = useRef();
 
   const navigate = useNavigate();
-  const { notes, addNote, editNote } = useContext(
+  const { notes, addNote, editNote, isLoading } = useContext(
     NoteContext
   ) as NoteContextType;
   const params = useParams();
@@ -74,50 +75,62 @@ export default function NoteForm({ type }) {
 
   return (
     <div className="flex flex-col items-center gap-5 mt-24  ">
-      <Form className="flex flex-col gap-5  w-2/4">
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl self-start">
-          {type === "new" ? "Add new note" : "Edit your note"}
-        </h1>
-        <div className="flex flex-col gap-3">
-          <Label htmlFor="title">Title</Label>
-          <Input
-            type="text"
-            id="title"
-            placeholder="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+      {isLoading ? (
+        <div className="self-center mt-10">
+          <Circles
+            height="80"
+            width="80"
+            radius="9"
+            color="green"
+            ariaLabel="three-dots-loading"
           />
         </div>
-        <div className="flex flex-col gap-3">
-          <Label htmlFor="note">Note</Label>
-          <Textarea
-            placeholder="Type your message here."
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
-        </div>
+      ) : (
+        <Form className="flex flex-col gap-5  w-2/4">
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl self-start">
+            {type === "new" ? "Add new note" : "Edit your note"}
+          </h1>
+          <div className="flex flex-col gap-3">
+            <Label htmlFor="title">Title</Label>
+            <Input
+              type="text"
+              id="title"
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-3">
+            <Label htmlFor="note">Note</Label>
+            <Textarea
+              placeholder="Type your message here."
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
+          </div>
 
-        <div className="flex gap-3">
-          <Button
-            onClick={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-          >
-            {type === "edit" ? "Edit Note" : "Add note"}
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                handleSubmit();
+              }}
+            >
+              {type === "edit" ? "Edit Note" : "Add note"}
+            </Button>
 
-          <Button
-            variant="outline"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate(-1);
-            }}
-          >
-            Cancel
-          </Button>
-        </div>
-      </Form>
+            <Button
+              variant="outline"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate(-1);
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </Form>
+      )}
     </div>
   );
 }
