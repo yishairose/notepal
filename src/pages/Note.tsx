@@ -46,9 +46,9 @@ export default function Note() {
     archiveNote(curNote.id, curNote?.archived);
   }
 
-  if (isLoading)
+  if (isLoading) {
     return (
-      <div className="self-center mt-10">
+      <div className="fixed top-0 left-0 h-screen w-screen flex justify-center items-center">
         <Circles
           height="80"
           width="80"
@@ -58,6 +58,7 @@ export default function Note() {
         />
       </div>
     );
+  }
   return (
     <div className="flex flex-col items-center gap-5 mt-24 h-screen ">
       {curNote && (
@@ -109,12 +110,4 @@ export default function Note() {
       )}
     </div>
   );
-}
-
-export function loader({ params }) {
-  // const id = Number(params.id?.slice(1));
-  // const data = fetchNoteItem(id);
-  // if (!data) return;
-  // return data;
-  return null;
 }

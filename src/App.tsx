@@ -2,6 +2,7 @@ import Header from "./customComponents/Header";
 import { Outlet } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 import { NoteProvider } from "./context/NoteContext";
+import { Toaster } from "@/components/ui/toaster";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
           <Header />
           <main className="flex flex-col gap-3 p-8  dark:bg-black w-9/12 mx-auto">
             <Outlet />
+            <Toaster />
           </main>
         </ThemeProvider>
       </NoteProvider>

@@ -30,30 +30,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Circles } from "react-loader-spinner";
 import {
   Dispatch,
   SetStateAction,
   useContext,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
 import { NoteContext } from "../context/NoteContext";
 
-interface NoteType {
-  id: number;
-  title: string;
-  content: string;
-  created_at: string;
-  archived: boolean;
-}
 interface NoteContextType {
-  notes: NoteType[] | null;
-  displaying: NoteType[] | null;
-  setDisplaying: Dispatch<SetStateAction<NoteType[]> | undefined>;
-  setCurPage: Dispatch<SetStateAction<number>>;
+  setCurPage: (pageNumber: number) => void;
 }
 
 export default function Notes() {
@@ -76,7 +64,7 @@ export default function Notes() {
     <Tabs
       defaultValue="active"
       className="w-full "
-      onValueChange={(value) => {
+      onValueChange={() => {
         setCurPage(1);
       }}
     >

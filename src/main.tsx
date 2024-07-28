@@ -8,9 +8,6 @@ import NewNote from "./pages/NewNote.tsx";
 import { Navigate } from "react-router-dom";
 import Note from "./pages/Note.tsx";
 import Edit from "./pages/Edit.tsx";
-import Error from "./customComponents/Error.tsx";
-import { loader as notesLoader } from "./pages/Notes.tsx";
-import { loader as noteLoader } from "./pages/Note.tsx";
 
 const router = createBrowserRouter([
   {
@@ -24,7 +21,7 @@ const router = createBrowserRouter([
       { path: "/notes", element: <Notes /> },
       { path: "/new", element: <NewNote /> },
       { path: "/edit/:id", element: <Edit /> },
-      { path: "/note/:id", element: <Note />, loader: noteLoader },
+      { path: "/note/:id", element: <Note /> },
     ],
   },
 ]);
