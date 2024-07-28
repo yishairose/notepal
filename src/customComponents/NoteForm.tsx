@@ -35,7 +35,7 @@ export default function NoteForm({ type }: { type: string }) {
   ) as NoteContextType;
   const params = useParams();
   const id = Number(params.id?.slice(1)) || null;
-  const [newNoteId, setNewNoteId] = useState(null);
+  const [newNoteId, setNewNoteId] = useState<number | null>(null);
 
   useEffect(() => {
     if (newNoteId) {
@@ -61,7 +61,9 @@ export default function NoteForm({ type }: { type: string }) {
   async function handleSubmit() {
     if (type === "new") {
       const data = await addNote(title, content);
-      setNewNoteId(data[0].id);
+      if (data) {
+        setNewNoteId(data[0].id);
+      }
     }
     if (type === "edit") {
       if (!id) return;
