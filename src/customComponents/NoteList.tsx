@@ -144,7 +144,9 @@ export default function NoteList({ tabName, search }: Props) {
   //Row selection functionality
   const [selected, setSelected] = useState<number[]>([]);
   const [allSelected, setAllSelected] = useState<boolean>(false);
-  const [allCheckedBox, setAllCheckBox] = useState<boolean | string>(false);
+  const [allCheckedBox, setAllCheckBox] = useState<boolean | "indeterminate">(
+    false
+  );
 
   useEffect(() => {
     if (selected.length > 0 && !allSelected) setAllCheckBox("indeterminate");
