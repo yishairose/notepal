@@ -191,7 +191,6 @@ export default function NoteList({ tabName, search }: Props) {
         <Circles
           height="80"
           width="80"
-          radius="9"
           color="green"
           ariaLabel="three-dots-loading"
         />
