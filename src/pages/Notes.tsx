@@ -1,12 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import {
-  Filter,
-  ListFilter,
-  NotepadText,
-  Search,
-  SquarePen,
-} from "lucide-react";
+import { ListFilter, Search, SquarePen } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NoteList from "../customComponents/NoteList";
