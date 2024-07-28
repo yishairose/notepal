@@ -1,11 +1,4 @@
-import {
-  createContext,
-  SetStateAction,
-  Dispatch,
-  useEffect,
-  useReducer,
-  useRef,
-} from "react";
+import { createContext, useEffect, useReducer, useRef } from "react";
 import supabase from "../config/supabaseClient";
 import { useToast } from "../components/ui/use-toast";
 
@@ -20,8 +13,6 @@ interface NoteType {
 interface NoteContextType {
   isLoading: boolean;
   notes: NoteType[] | null;
-  setNotes: Dispatch<SetStateAction<Array<NoteType> | null>>;
-  displaying: NoteType[] | null;
   setCurPage: (pageNumber: number) => void;
   addNote: (title: string, content: string) => Promise<NoteType[] | void>;
   deleteNote: (id: number) => Promise<void>;

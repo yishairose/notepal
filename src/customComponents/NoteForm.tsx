@@ -64,6 +64,7 @@ export default function NoteForm({ type }: { type: string }) {
       setNewNoteId(data[0].id);
     }
     if (type === "edit") {
+      if (!id) return;
       const data = await editNote(id, title, content);
       if (data) {
         setNewNoteId(data[0].id);
@@ -97,7 +98,7 @@ export default function NoteForm({ type }: { type: string }) {
             id="title"
             placeholder="Title"
             value={title}
-            onChange={(e: Event) => {
+            onChange={(e) => {
               const target = e.target as HTMLInputElement;
               setTitle(target.value);
             }}
@@ -108,8 +109,8 @@ export default function NoteForm({ type }: { type: string }) {
           <Textarea
             placeholder="Type your message here."
             value={content}
-            onChange={(e: Event) => {
-              const target = e.target as HTMLInputElement;
+            onChange={(e) => {
+              const target = e.target;
               setContent(target.value);
             }}
           />

@@ -1,5 +1,3 @@
-import { UrlWithStringQuery } from "url";
-
 export function capitalise(string: string): string {
   const firstLetter = string[0].toUpperCase();
   return `${firstLetter}${string.slice(1)}`;

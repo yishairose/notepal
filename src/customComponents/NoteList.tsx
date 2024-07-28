@@ -29,22 +29,14 @@ import {
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-import { Link, useNavigate } from "react-router-dom";
-import {
-  SetStateAction,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { NoteContext } from "../context/NoteContext";
 import { capitalise, dateStamp } from "../utils/helpers";
 import { Circles } from "react-loader-spinner";
@@ -291,7 +283,7 @@ export default function NoteList({ tabName, search }: Props) {
                     />
                   </TableCell>
                   <TableCell>
-                    <Badge variant={note.archived ? "destructive" : ""}>
+                    <Badge variant={note.archived ? "destructive" : "default"}>
                       {note.archived ? "Archived" : "Active"}
                     </Badge>
                   </TableCell>
