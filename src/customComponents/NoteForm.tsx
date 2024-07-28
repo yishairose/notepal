@@ -2,14 +2,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  redirect,
-  useFetcher,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
-import { useContext, useEffect, useRef, useState } from "react";
+import { Form, useNavigate, useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 
 import { NoteContext } from "../context/NoteContext";
 import { Circles } from "react-loader-spinner";
@@ -21,13 +15,20 @@ interface NoteType {
   createdAt: string;
   archived: boolean;
 }
+
 interface NoteContextType {
+  isLoading: boolean;
   notes: NoteType[] | null;
-  displaying: NoteType[] | null;
-  setDisplaying: Dispatch<SetStateAction<NoteType[]> | undefined>;
-  setCurPage: Dispatch<SetStateAction<number>>;
+  addNote: (title: string, content: string) => Promise<NoteType[] | void>;
+  deleteNote: (id: number) => Promise<void>;
+  editNote: (
+    id: number,
+    title: string,
+    content: string
+  ) => Promise<NoteType[] | void>;
 }
-export default function NoteForm({ type }) {
+
+export default function NoteForm({ type }: { type: string }) {
   const navigate = useNavigate();
   const { notes, addNote, editNote, isLoading } = useContext(
     NoteContext
@@ -48,6 +49,7 @@ export default function NoteForm({ type }) {
   useEffect(() => {
     if (type === "edit") {
       const curNote = notes?.filter((note) => note.id === id)?.at(0);
+      if (!curNote) return;
       setTitle(curNote?.title);
       setContent(curNote?.content);
     }
@@ -95,7 +97,10 @@ export default function NoteForm({ type }) {
             id="title"
             placeholder="Title"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e: Event) => {
+              const target = e.target as HTMLInputElement;
+              setTitle(target.value);
+            }}
           />
         </div>
         <div className="flex flex-col gap-3">
@@ -103,13 +108,16 @@ export default function NoteForm({ type }) {
           <Textarea
             placeholder="Type your message here."
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={(e: Event) => {
+              const target = e.target as HTMLInputElement;
+              setContent(target.value);
+            }}
           />
         </div>
 
         <div className="flex gap-3">
           <Button
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.preventDefault();
               handleSubmit();
             }}
@@ -119,7 +127,7 @@ export default function NoteForm({ type }) {
 
           <Button
             variant="outline"
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.preventDefault();
               navigate(-1);
             }}

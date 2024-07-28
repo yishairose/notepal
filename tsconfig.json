@@ -1,15 +1,4 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["/*"]
-    },
-    "lib": ["es6", "dom", "es2020"],
-    "target": "es2020",
-
-    "moduleResolution": "node"
-  },
-
   "files": [],
   "references": [
     {
@@ -18,5 +7,11 @@
     {
       "path": "./tsconfig.node.json"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
 }

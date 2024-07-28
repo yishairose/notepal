@@ -34,7 +34,6 @@ interface NoteContextType {
   archiveNote: (id: number, archived: boolean) => Promise<void>;
   archiveMultiple: (selected: number[]) => Promise<void>;
   unArchiveMultiple: (selected: number[]) => Promise<void>;
-
   curPage: number;
 }
 

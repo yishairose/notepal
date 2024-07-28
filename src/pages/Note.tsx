@@ -1,7 +1,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -19,13 +18,16 @@ interface NoteType {
   id: number;
   title: string;
   content: string;
-  createdAt: string;
+  created_at: string;
   archived: boolean;
 }
+
 interface NoteContextType {
+  isLoading: boolean;
   notes: NoteType[] | null;
-  displaying: NoteType[] | null;
-  setDisplaying: Dispatch<SetStateAction<NoteType[]> | undefined>;
+  addNote: (title: string, content: string) => Promise<NoteType[] | void>;
+  deleteNote: (id: number) => Promise<void>;
+  archiveNote: (id: number, archived: boolean) => Promise<void>;
 }
 
 export default function Note() {
@@ -35,15 +37,16 @@ export default function Note() {
     NoteContext
   ) as NoteContextType;
   const params = useParams();
-  const id = Number(params.id.slice(1));
-  const curNote = notes?.filter((note) => note.id === id)?.at(0);
+  const id = Number(params?.id?.slice(1));
+  const curNote: NoteType | undefined =
+    notes?.filter((note) => note.id === id)?.at(0) ?? undefined;
 
   function handlDeleteNote() {
     deleteNote(id);
     navigate("/notes");
   }
   function handleArchiveNote() {
-    archiveNote(curNote.id, curNote?.archived);
+    if (curNote) archiveNote(curNote.id, curNote.archived);
   }
 
   if (isLoading) {
