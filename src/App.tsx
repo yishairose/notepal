@@ -10,7 +10,7 @@ function App() {
       <NoteProvider>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
           <Header />
-          <main className="flex flex-col gap-3 p-8  dark:bg-black w-9/12 mx-auto">
+          <main className="flex flex-col gap-3 md:p-8   dark:bg-black  mx-auto">
             <Outlet />
             <Toaster />
           </main>

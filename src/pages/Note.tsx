@@ -62,7 +62,7 @@ export default function Note() {
     );
   }
   return (
-    <div className="flex flex-col items-center gap-5 mt-24 h-screen ">
+    <div className="flex flex-col items-center gap-5 mt-24 h-screen w-9/12 mx-auto  ">
       {curNote && (
         <>
           <div className="flex gap-3 mb-3 self-start items-center w-full">
@@ -85,7 +85,7 @@ export default function Note() {
               onPressedChange={handleArchiveNote}
             >
               <PackageOpen />
-              &nbsp; Archive
+              <span className="hidden md:block">&nbsp; Archive</span>
             </Toggle>
             <Button
               variant="destructive"

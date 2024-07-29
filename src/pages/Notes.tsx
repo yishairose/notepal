@@ -50,12 +50,12 @@ export default function Notes() {
   return (
     <Tabs
       defaultValue="active"
-      className="w-full "
+      className="w-9/12 mx-auto "
       onValueChange={() => {
         setCurPage(1);
       }}
     >
-      <div className="flex items-center gap-3  mb-3 p-4 flex-col md:flex-row md:justify-between justify-between">
+      <div className="flex md:items-center gap-3  mb-3 p:0 md:p-4 flex-col md:flex-row md:justify-between justify-between">
         <TabsList>
           <TabsTrigger value="active">Active</TabsTrigger>
           <TabsTrigger value="all">All notes</TabsTrigger>
@@ -115,14 +115,16 @@ export default function Notes() {
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
 
-        <Link to="/new">
-          <Button>
-            <SquarePen />
-            <span className="sm:whitespace-nowrap">&nbsp; Create note</span>
-          </Button>
-        </Link>
+          <Link to="/new">
+            <Button>
+              <SquarePen />
+              <span className="sm:whitespace-nowrap hidden lg:block">
+                &nbsp; Create note
+              </span>
+            </Button>
+          </Link>
+        </div>
       </div>
       <TabsContent value="active">
         <NoteList tabName={"active"} search={{ query, searchType, sort }} />
