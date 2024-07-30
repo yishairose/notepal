@@ -112,9 +112,9 @@ export default function NoteList({ tabName, search }: Props) {
             a.title < b.title ? -1 : a.title > b.title ? 1 : 0
           )
         : [...(displaying || [])].sort((a, b) =>
-            a.created_at < b.created_at
+            a.created_at > b.created_at
               ? -1
-              : a.created_at > b.created_at
+              : a.created_at < b.created_at
               ? 1
               : 0
           );
